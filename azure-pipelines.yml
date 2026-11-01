@@ -4,39 +4,24 @@ trigger:
 pool:
   name: default
 
-steps:
-  - script: echo "Hello, world!"
-    displayName: 'Run a one-line script'
+variables:
+  buildConfiguration: 'Release'
 
-  trigger:
-  - master
+stages:
+- stage: Build
+  jobs:
+  - job: Build
+    steps:
+    - task: UseDotNet@2
+      inputs:
+        version: '6.0.x'
+    - task: DotNetCoreCLI@2
+      inputs:
+        command: 'build'
+        projects: '**/*.csproj'
 
-pool:
-  name: default
-
-steps:
-  - script: echo "Hello, world!"
-    displayName: 'Run a one-line script'
-
-  - powershell: |
-      $version = "1.16.5"
-      $url = "https://releases.hashicorp.com/terraform/$version/terraform_${version}_windows_amd64.zip"
-      $folder = "$(Agent.TempDirectory)\terraform"
-
-      New-Item -ItemType Directory -Force -Path $folder | Out-Null
-
-      Invoke-WebRequest -Uri $url -OutFile "$folder\terraform.zip"
-      Expand-Archive -Path "$folder\terraform.zip" -DestinationPath $folder -Force
-
-      Write-Host "##vso[task.prependpath]$folder"
-      & "$folder\terraform.exe" version
-    displayName: 'Terraform Install'
-
-  - script: terraform fmt -check -recursive
-    displayName: 'Terraform Format Check'
-
-  - script: terraform init -backend=false
-    displayName: 'Terraform Init'
-
-  - script: terraform validate
-    displayName: 'Terraform Validate'
+- stage: Deploy
+  jobs:
+  - job: Deploy
+    steps:
+    - script: echo "Deploying app..."
