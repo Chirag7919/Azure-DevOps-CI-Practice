@@ -1,0 +1,22 @@
+trigger: none
+
+pool: Default
+
+stages:
+  - stage: TerraformInitValidatePaln
+    displayName: "terraform init validate plan"
+    jobs:
+      - job: 
+        displayName: "terraform init validate plan"
+        steps:        
+        - task: TerraformTask@5
+          displayName: "Terraform init"
+          inputs:
+            provider: 'azurerm'
+            command: 'init'
+            workingDirectory: '$(System.DefaultWorkingDirectory)/Infra_code'
+            backendServiceArm: '1st_Connection'
+            backendAzureRmResourceGroupName: 'Nitesh'
+            backendAzureRmStorageAccountName: 'niteshstg25'
+            backendAzureRmContainerName: 'nitu'
+            backendAzureRmKey: 'terraform.tfstate'
