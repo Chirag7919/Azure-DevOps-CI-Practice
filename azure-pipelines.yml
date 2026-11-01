@@ -7,3 +7,36 @@ pool:
 steps:
   - script: echo "Hello, world!"
     displayName: 'Run a one-line script'
+
+  trigger:
+  - master
+
+pool:
+  name: default
+
+steps:
+  - script: echo "Hello, world!"
+    displayName: 'Run a one-line script'
+
+  - powershell: |
+      $version = "1.16.5"
+      $url = "https://releases.hashicorp.com/terraform/$version/terraform_${version}_windows_amd64.zip"
+      $folder = "$(Agent.TempDirectory)\terraform"
+
+      New-Item -ItemType Directory -Force -Path $folder | Out-Null
+
+      Invoke-WebRequest -Uri $url -OutFile "$folder\terraform.zip"
+      Expand-Archive -Path "$folder\terraform.zip" -DestinationPath $folder -Force
+
+      Write-Host "##vso[task.prependpath]$folder"
+      & "$folder\terraform.exe" version
+    displayName: 'Terraform Install'
+
+  - script: terraform fmt -check -recursive
+    displayName: 'Terraform Format Check'
+
+  - script: terraform init -backend=false
+    displayName: 'Terraform Init'
+
+  - script: terraform validate
+    displayName: 'Terraform Validate'
