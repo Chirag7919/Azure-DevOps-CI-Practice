@@ -4,24 +4,16 @@ trigger:
 pool:
   name: default
 
-variables:
-  buildConfiguration: 'Release'
-
 stages:
-- stage: Build
+- stage: terraform_init
   jobs:
-  - job: Build
+  - job: init
     steps:
-    - task: UseDotNet@2
+    - task: TerraformTask@5
       inputs:
-        version: '6.0.x'
-    - task: DotNetCoreCLI@2
-      inputs:
-        command: 'build'
-        projects: '**/*.csproj'
-
-- stage: Deploy
-  jobs:
-  - job: Deploy
-    steps:
-    - script: echo "Deploying app..."
+        provider: 'azurerm'
+        command: 'init'
+        backendServiceArm: 'Pay-As-You-Go (36acc020-70d9-4256-b01b-f8395250115f)'
+        backendAzureRmStorageAccountName: 'niteshstg25'
+        backendAzureRmContainerName: 'nitu'
+        backendAzureRmKey: 'terraform.tfstate'
