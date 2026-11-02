@@ -17,3 +17,10 @@ stages:
         backendAzureRmStorageAccountName: 'niteshstg25'
         backendAzureRmContainerName: 'nitu'
         backendAzureRmKey: 'terraform.tfstate'
+
+    - task: TerraformTask@5
+      inputs:
+        provider: 'azurerm'
+        command: 'plan'
+        environmentServiceNameAzureRM: 'Pay-As-You-Go (36acc020-70d9-4256-b01b-f8395250115f)'
+        
