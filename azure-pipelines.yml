@@ -58,5 +58,6 @@ stages:
       inputs:
         provider: 'azurerm'
         command: 'destroy'
+        commandOptions: '-auto-approve'
         environmentServiceNameAzureRM: 'Pay-As-You-Go (36acc020-70d9-4256-b01b-f8395250115f)'
                 
